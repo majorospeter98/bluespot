@@ -1,0 +1,17 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+  line-height: 1.6;
+  font-family: "Red Hat Display", sans-serif;
+}
+:root{
+  --primaryColor: #35b8f0
+}
+.container{
+  max-width: 1280px;
+  margin: 0 auto;
+ width:80%;
+ 
+}
+
