@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen d-flex flex-column justify-center">
+  <div class="h-screen d-flex flex-column justify-center position:relative">
     <v-card class="mx-auto pa-12 pb-8 w-100" elevation="8" max-width="448" rounded="lg">
       <v-form @submit.prevent="submitForm" ref="form">
         <div class="text-subtitle-1 text-medium-emphasis">Email</div>
@@ -7,7 +7,7 @@
         <v-text-field
           density="compact"
           :rules="emailRules"
-          placeholder="Email address"
+          placeholder="Add meg az emailed"
           prepend-inner-icon="mdi-email-outline"
           variant="outlined"
           v-model="email"
@@ -15,7 +15,7 @@
         ></v-text-field>
 
         <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
-          Password
+          Jelszó
         </div>
 
         <v-text-field
@@ -23,7 +23,7 @@
           :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
           :type="visible ? 'text' : 'password'"
           density="compact"
-          placeholder="Enter your password"
+          placeholder="Add meg a jelszavad"
           prepend-inner-icon="mdi-lock-outline"
           variant="outlined"
           @click:append-inner="visible = !visible"
@@ -32,7 +32,7 @@
         ></v-text-field>
 
         <v-btn class="mt-4" type="submit" size="large" variant="elevated" color="success" block>
-          Log In
+          Bejelentkezés
         </v-btn>
 
         <v-card-text class="text-center">
@@ -42,7 +42,7 @@
             href="#"
             rel="noopener noreferrer"
           >
-            Register <v-icon icon="mdi-chevron-right"></v-icon>
+            Regisztráció <v-icon icon="mdi-chevron-right"></v-icon>
           </router-link>
         </v-card-text>
       </v-form>
@@ -65,18 +65,18 @@ const email = ref('')
 const emailRules = [
   (value) => {
     if (value) return true
-    return "It's required"
+    return 'Kötelező kitölteni'
   },
-  (value) => /.+@.+\..+/.test(value) || 'Must be a valid email and contain @',
+  (value) => /.+@.+\..+/.test(value) || 'Létező emailnek kell lennie és tartalmaznia kell a@',
 ]
 const passwordRules = [
   (value) => {
     if (value) return true
-    return "It's required"
+    return 'Kötelező kitölteni'
   },
   (value) => {
     if (value.length >= 8) return true
-    return 'Password should be atleast 8 character'
+    return 'A jelszónak legalább 8 karakternek kell lennie'
   },
 ]
 async function submitForm() {
@@ -87,10 +87,10 @@ async function submitForm() {
     )
     if (findUser) {
       login.logIn(email)
-      toast.success('Successfully logged in', { timeout: 1200 })
+      toast.success('Sikeres bejelentkezés', { timeout: 1000 })
       router.push('/dashboard')
     } else {
-      toast.error('Wrong data', { timeout: 2200 })
+      toast.error('Hibás email/jelszó', { timeout: 2200 })
     }
   }
 }

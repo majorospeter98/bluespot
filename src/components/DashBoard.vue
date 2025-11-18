@@ -1,120 +1,120 @@
 <template>
   <div class="text-center pa-4 d-flex justify-center flex-column">
-    <v-btn width="200px" class="ml-auto mt-5" v-if="isLoggedin" @click="logOut" color="#DD2C00">
-      Logout
+    <span class="ml-auto">{{ isLoggedin.currentUser }}</span>
+       <v-btn width="200px" class="ml-auto" v-if="isLoggedin" @click="logOut" color="#DD2C00">
+      Kijelentkezés
     </v-btn>
-    <v-btn width="200px" class="mx-auto mt-5" @click="dialog = true" color="primary">
-      New time
+
+    <v-btn width="200px" class="mx-auto mt-10" @click="dialog = true" color="primary">
+      Új óra
     </v-btn>
 
     <v-dialog
+      max-width="500px"
       transition="dialog-bottom-transition"
       v-model="dialog"
       class="mx-auto mt-7"
-      width="80%"
+      width=""
     >
-      <v-card width="90%">
-        <v-sheet class="mx-auto mt-4" max-width="600" width="80%">
-          <v-form @submit.prevent="submit">
-            <v-text-field :rules="datePickerRule"
-              ><v-date-picker
-                :allowed-dates="allowedDates"
-                color="primary"
-                width="90%"
-                v-model="pickedDate"
-              ></v-date-picker
-            ></v-text-field>
+      <v-card>
+        <v-btn
+          prepend-icon=""
+          icon="mdi-close"
+          color="black"
+          class="ms-auto p-14"
+          text="Close"
+          @click="dialog = false"
+        ></v-btn>
+        <v-sheet class="mx-auto mt-4" width="80%">
+          <v-form @submit.prevent="submit" ref="form">
+            <v-date-input
+              v-model="pickedDate"
+              :rules="datePickerRule"
+              prepend-icon=""
+              prepend-inner-icon="$calendar"
+              label="Dátum"
+              min="minDate"
+              max="2025-11-30"
+              clearable
+              variant="outlined"
+              :allowed-dates="allowedDates"
+            />
 
-            <v-text-field min=1 max=22 v-model="time" label="Time" type="number"></v-text-field>
+            <v-text-field
+              :rules="[
+                (v) => !!v || 'Kötelező kitölteni',
+                (v) => v >= 1 || 'Minimum érték 1',
+                (v) => v <= 24 || 'Maximum érték 24',
+              ]"
+              variant="outlined"
+              v-model="time"
+              label="Óra"
+              type="number"
+            ></v-text-field>
             <v-textarea
               :rules="commentRules"
               label="Megjegyzés"
               variant="outlined"
               v-model="comment"
             ></v-textarea>
-            <v-btn class="mt-2" color="primary" text="Submit" type="submit" block></v-btn>
+            <div class="d-flex justify-end ga-2 mb-2">
+            <v-btn color="primary" text="Mentés" type="submit" ></v-btn>
+          
+          <v-btn
+            
+            color="error"
+            
+            text="Mégse"
+            @click="dialog = false"
+          ></v-btn>
+            </div>
           </v-form>
         </v-sheet>
-        <template v-slot:actions>
-          <v-btn color="error" class="ms-auto m-4" text="Close" @click="dialog = false"></v-btn>
-        </template>
+        
       </v-card>
     </v-dialog>
-    <v-table class="mt-6">
-      <thead>
-        <tr>
-          <th class="text-center">Hétfő</th>
-          <th class="text-center">Kedd</th>
-          <th class="text-center">Szerda</th>
-          <th class="text-center">Csütörtök</th>
-          <th class="text-center">Péntek</th>
-          <th class="text-center">Összeg</th>
-          <th class="text-center">Hét</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in sortItems" :key="item.week">
-          <td>
-            <div v-for="entry in item[1]" :key="entry">{{ entry }}</div>
-          </td>
-          <td>
-            <div v-for="entry in item[2]" :key="entry">{{ entry }}</div>
-          </td>
-          <td>
-            <div v-for="entry in item[3]" :key="entry">{{ entry }}</div>
-          </td>
-          <td>
-            <div v-for="entry in item[4]" :key="entry">{{ entry }}</div>
-          </td>
-          <td>
-            <div v-for="entry in item[5]" :key="entry">{{ entry }}</div>
-          </td>
-          <td>{{ item.amount }}</td>
-          <td>{{ item.week }}</td>
-        </tr>
-      </tbody>
-    </v-table>
+    <TableItem :items="items"></TableItem>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import TableItem from './TableItem.vue'
+import { ref } from 'vue'
 import { useLoginStore } from '@/stores/login'
 import { useRouter } from 'vuetify/lib/composables/router'
 import { useToast } from 'vue-toastification'
+const form = ref('')
 const isLoggedin = useLoginStore()
-const toast= useToast()
+const toast = useToast()
 const router = useRouter()
 const dialog = ref(false)
 const items = ref([])
 const pickedDate = ref(null)
-const time = ref(1)
+const time = ref(null)
 const comment = ref('')
 
 const datePickerRule = [
   (value) => {
     if (value) return true
-    return "It's required"
+    return 'Kötelező kitölteni'
   },
 ]
 const commentRules = [
   (value) => {
-    if (value.length >= 8) return true
-    return 'Comment should be atleast 10 character'
+    if (!value || value.length < 10) {
+      return 'A megjegyzésnek legalább 10 karakternek kell lennie'
+    }
+    return true
   },
 ]
 function allowedDates(val) {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
-
   const selected = new Date(val)
   selected.setHours(0, 0, 0, 0)
-
-  const day = selected.getDay() // 0 = vasárnap, 6 = szombat
-
+  const day = selected.getDay()
   const isWeekend = day === 0 || day === 6
   const isFutureOrToday = selected >= today
-
   return isFutureOrToday && !isWeekend
 }
 function getWeekOfMonth(dateObj) {
@@ -122,35 +122,36 @@ function getWeekOfMonth(dateObj) {
   const weekNumber = Math.ceil((dateObj.getDate() + firstDay.getDay()) / 7)
   return weekNumber
 }
-function submit() {
-  console.log(pickedDate.value)
-  console.log(isLoggedin)
-  console.log(isLoggedin.currentUser)
-  const dateObj = new Date(pickedDate.value)
-  const dayIndex = dateObj.getDay()
-  let weekRow = items.value.find((row) => row.week === getWeekOfMonth(dateObj))
-  if (!weekRow) {
-    weekRow = {
-      1: [],
-      2: [],
-      3: [],
-      4: [],
-      5: [],
-      amount: 0,
-      week: getWeekOfMonth(dateObj),
+async function submit() {
+  const { valid } = await form.value.validate()
+  if (!valid) {
+    toast.error('Hibás a form', { timeout: 2400 })
+  } else {
+    const dateObj = new Date(pickedDate.value)
+    const dayIndex = dateObj.getDay()
+    let weekRow = items.value.find((row) => row.week === getWeekOfMonth(dateObj))
+    if (!weekRow) {
+      weekRow = {
+        1: [],
+        2: [],
+        3: [],
+        4: [],
+        5: [],
+        amount: 0,
+        week: getWeekOfMonth(dateObj),
+      }
+      items.value.push(weekRow)
     }
-    items.value.push(weekRow)
+    weekRow[dayIndex].push(time.value, comment.value)
+    weekRow.amount += Number(time.value)
+    toast.success('Sikeres Mentés', { timeout: 1200 })
+    form.value.reset()
+    dialog.value = false
   }
-  weekRow[dayIndex].push(time.value, comment.value)
-  weekRow.amount += Number(time.value)
-}
-const sortItems = computed(() => {
-  return items.value.sort((a, b) => a.week - b.week)
-})
-function logOut() {
-  isLoggedin.currentUser = null
-  console.log(isLoggedin.currentUser)
-  router.push('/login')
 }
 
+function logOut() {
+  isLoggedin.currentUser = null
+  router.push('/login')
+}
 </script>

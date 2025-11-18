@@ -6,23 +6,33 @@
 
         <v-text-field
           density="compact"
-          placeholder="Email address"
+          placeholder="Add meg az emailed"
           :rules="emailRules"
           prepend-inner-icon="mdi-email-outline"
           variant="outlined"
           v-model="email"
           autocomplete="new-email"
+          type="email"
         ></v-text-field>
-
+        <div class="text-subtitle-1 text-medium-emphasis">Felhasználónév</div>
+ <v-text-field
+  prepend-inner-icon="mdi-account-outline"
+   placeholder="Add meg a felhasználóneved"
+      label="Felhasználónév"
+      type="input"
+      variant="outlined"
+      density="compact"
+      :rules="usernameRules"
+    ></v-text-field>
         <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
-          Password
+          Jelszó
         </div>
         <v-text-field
           :rules="passwordRules"
           :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
           :type="visible ? 'text' : 'password'"
           density="compact"
-          placeholder="Enter your password"
+          placeholder="Add meg a jelszót"
           prepend-inner-icon="mdi-lock-outline"
           variant="outlined"
           @click:append-inner="visible = !visible"
@@ -31,12 +41,12 @@
         ></v-text-field>
 
         <v-btn class="mt-4" type="submit" size="large" variant="elevated" color="success" block>
-          Register
+          Regisztráció
         </v-btn>
 
         <v-card-text class="text-center">
           <router-link to="/login" class="text-blue text-decoration-none" rel="noopener noreferrer">
-            Login <v-icon icon="mdi-chevron-right"></v-icon>
+            Bejelentkezés <v-icon icon="mdi-chevron-right"></v-icon>
           </router-link>
         </v-card-text>
       </v-form>
@@ -50,42 +60,52 @@ import { useLoginStore } from '@/stores/login'
 import { useToast } from 'vue-toastification'
 import { useRouter } from 'vuetify/lib/composables/router'
 const login = useLoginStore()
-const toast= useToast()
+const toast = useToast()
 const form = ref()
-const router= useRouter()
+const router = useRouter()
 const visible = ref(false)
+const username=ref("")
 const password = ref('')
 const email = ref('')
 const emailRules = [
   (value) => {
     if (value) return true
-    return "It's required"
+    return 'Kötelező kitölteni'
   },
-  (value) => /.+@.+\..+/.test(value) || 'Must be a valid email and contain @',
+  (value) => /.+@.+\..+/.test(value) || 'Létező emailnek kell lennie és tartalmaznia kell a@',
+]
+const usernameRules = [
+  (value) => {
+    if (value) return true
+    return 'Kötelező kitölteni'
+  },
+  (value) => {
+    if (value?.length >= 8) return true
+    return 'A felhasználónévnek legalább 6 karakternek kell lennie'
+  },
 ]
 const passwordRules = [
   (value) => {
     if (value) return true
-    return "It's required"
+    return 'Kötelező kitölteni'
   },
   (value) => {
     if (value?.length >= 8) return true
-    return 'Password should be atleast 8 character'
+    return 'A jelszónak legalább 8 karakternek kell lennie'
   },
 ]
 async function submitForm() {
   const { valid } = await form.value.validate()
   if (valid) {
     const isEmailExist = login.users.find((user) => user.email === email.value)
-       if (!isEmailExist) {
-     toast.success("Succesful registration", {timeout:2200})
-      login.users.push({ email: email.value, password: password.value })
-          form.value.resetValidation()
+    if (!isEmailExist) {
+      toast.success('Sikeres regisztráció', { timeout: 2200 })
+      login.users.push({ email: email.value, username: username.value, password: password.value })
+      form.value.resetValidation()
       form.value.reset()
-router.push("/login")
+      router.push('/login')
     } else {
-    
-    toast.error("The email already exist", {timeout:2200})
+      toast.error('Ezzel az emaillel már regisztráltak', { timeout: 2200 })
     }
   }
 }
