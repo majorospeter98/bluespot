@@ -67,7 +67,7 @@ const emailRules = [
     if (value) return true
     return 'Kötelező kitölteni'
   },
-  (value) => /.+@.+\..+/.test(value) || 'Létező emailnek kell lennie és tartalmaznia kell a@',
+  (value) => /.+@.+\..+/.test(value) || 'Helytelen email formátum',
 ]
 const passwordRules = [
   (value) => {

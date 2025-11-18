@@ -32,7 +32,7 @@
               :rules="datePickerRule"
               prepend-icon=""
               prepend-inner-icon="$calendar"
-              label="Dátum"
+            placeholder="Válaszd ki a dátumot"
               min="minDate"
               max="2025-11-30"
               clearable
@@ -41,6 +41,8 @@
             />
 
             <v-text-field
+            prepend-icon=""
+              prepend-inner-icon="mdi-clock-outline"
               :rules="[
                 (v) => !!v || 'Kötelező kitölteni',
                 (v) => v >= 1 || 'Minimum érték 1',
@@ -48,12 +50,14 @@
               ]"
               variant="outlined"
               v-model="time"
-              label="Óra"
+              placeholder="Óra"
               type="number"
             ></v-text-field>
             <v-textarea
+            prepend-icon=""
+              prepend-inner-icon="mdi-comment-outline"
               :rules="commentRules"
-              label="Megjegyzés"
+           placeholder="Megjegyzés"
               variant="outlined"
               v-model="comment"
             ></v-textarea>

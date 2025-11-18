@@ -18,10 +18,11 @@
  <v-text-field
   prepend-inner-icon="mdi-account-outline"
    placeholder="Add meg a felhasználóneved"
-      label="Felhasználónév"
+      
       type="input"
       variant="outlined"
       density="compact"
+      autocomplete="new-username"
       :rules="usernameRules"
     ></v-text-field>
         <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
@@ -72,7 +73,7 @@ const emailRules = [
     if (value) return true
     return 'Kötelező kitölteni'
   },
-  (value) => /.+@.+\..+/.test(value) || 'Létező emailnek kell lennie és tartalmaznia kell a@',
+  (value) => /.+@.+\..+/.test(value) || 'Helytelen email formátum',
 ]
 const usernameRules = [
   (value) => {
@@ -81,7 +82,7 @@ const usernameRules = [
   },
   (value) => {
     if (value?.length >= 8) return true
-    return 'A felhasználónévnek legalább 6 karakternek kell lennie'
+    return 'A felhasználónévnek legalább 8 karakternek kell lennie'
   },
 ]
 const passwordRules = [
