@@ -34,7 +34,7 @@
               prepend-inner-icon="$calendar"
             placeholder="Válaszd ki a dátumot"
               min="minDate"
-              max="2025-11-30"
+              max="2025-12-30"
               clearable
               variant="outlined"
               :allowed-dates="allowedDates"
