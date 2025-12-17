@@ -1,6 +1,6 @@
 <template>
   <div class="overflow-x-auto">
-    <table class="min-w-200 shadow-[6px_6px_54px_0px_#0000000D] w-full mt-6 py-7.5 px-4.75 bg-white">
+    <table class="w-full max-w-286.5 shadow-[6px_6px_54px_0px_#0000000D] mt-6 py-7.5 px-4.75 bg-white  sm:w-100 md:w-175 lg:w-300">
       <thead class= "mt-12 h-11 border-b border-b-[#EAECF0] rounded-tl-lg rounded-bl-lg  px-6 py-3 bg-[#F1F4F9] font-medium inter-500 text-[12px] leading-4.5 text-[#202224]">
         <tr>
           <th class="text-left font-medium px-3 py-2">Hétfő</th>
