@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from './components/Login.vue'
 import DashBoard from './components/DashBoard.vue'
 import Register from './components/Register.vue'
+import ResetPassword from './components/ResetPassword.vue'
 import NotFound from './components/NotFound.vue'
 import { useLoginStore } from './stores/login'
 import { useToast } from 'vue-toastification'
@@ -17,6 +18,10 @@ export const router = createRouter({
     {
       path: '/login',
       component: Login,
+    },
+    {
+      path: '/reset',
+      component: ResetPassword,
     },
     {
       path: '/dashboard',

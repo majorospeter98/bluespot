@@ -1,11 +1,16 @@
 <template>
-  <v-app>
+  
     <div>
-      <v-main>
+ <the-header></the-header>
+      <main>
         <router-view></router-view>
-      </v-main>
+      </main>
     </div>
-  </v-app>
+  
 </template>
-<script setup></script>
-<style></style>
+<script setup>
+  import Logo from '@/assets/logo.svg';
+import TheHeader from './components/TheHeader.vue';
+</script>
+
+

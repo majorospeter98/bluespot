@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+*{
+ 
+   box-sizing: border-box;
+  
+}
+.font-jakarta {
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+.poppins-medium {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+.poppins-400 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.inter-500 {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+.roboto-400{
+   font-family: "Roboto", sans-serif;
+   font-weight: 400;
+}

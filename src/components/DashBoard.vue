@@ -1,116 +1,124 @@
 <template>
-  <div class="text-center pa-4 d-flex justify-center flex-column">
-    <span class="ml-auto">{{ isLoggedin.currentUser }}</span>
-       <v-btn width="200px" class="ml-auto" v-if="isLoggedin" @click="logOut" color="#DD2C00">
-      Kijelentkezés
-    </v-btn>
-
-    <v-btn width="200px" class="mx-auto mt-10" @click="dialog = true" color="primary">
-      Új óra
-    </v-btn>
-
-    <v-dialog
-      max-width="500px"
-      transition="dialog-bottom-transition"
-      v-model="dialog"
-      class="mx-auto mt-7"
-      width=""
+  <div class="flex flex-col items-center justify-center">
+    <button
+      class="flex items-center justify-center mt-12.25 ml-auto mr-36.75 px-8 py-4 gap-2 bg-[#2B2A2A] text-white rounded-lg leading-[150%] .font-jakarta font-bold"
+      @click="modal = true"
     >
-      <v-card>
-        <v-btn
-          prepend-icon=""
-          icon="mdi-close"
-          color="black"
-          class="ms-auto p-14"
-          text="Close"
-          @click="dialog = false"
-        ></v-btn>
-        <v-sheet class="mx-auto mt-4" width="80%">
-          <v-form @submit.prevent="submit" ref="form">
-            <v-date-input
-              v-model="pickedDate"
-              :rules="datePickerRule"
-              prepend-icon=""
-              prepend-inner-icon="$calendar"
-            placeholder="Válaszd ki a dátumot"
-              min="minDate"
-              max="2025-12-30"
-              clearable
-              variant="outlined"
-              :allowed-dates="allowedDates"
-            />
-
-            <v-text-field
-            prepend-icon=""
-              prepend-inner-icon="mdi-clock-outline"
-              :rules="[
-                (v) => !!v || 'Kötelező kitölteni',
-                (v) => v >= 1 || 'Minimum érték 1',
-                (v) => v <= 24 || 'Maximum érték 24',
-              ]"
-              variant="outlined"
-              v-model="time"
-              placeholder="Óra"
-              type="number"
-            ></v-text-field>
-            <v-textarea
-            prepend-icon=""
-              prepend-inner-icon="mdi-comment-outline"
-              :rules="commentRules"
-           placeholder="Megjegyzés"
-              variant="outlined"
-              v-model="comment"
-            ></v-textarea>
-            <div class="d-flex justify-end ga-2 mb-2">
-            <v-btn color="primary" text="Mentés" type="submit" ></v-btn>
-          
-          <v-btn
-            
-            color="error"
-            
-            text="Mégse"
-            @click="dialog = false"
-          ></v-btn>
+      <img :src="PlusIcon" class="h-5 w-5"> <span class="font-jakarta leading-[150%]" >Új óra </span>
+    </button>
+    <div v-if="modal" class="fixed inset-0 flex items-center justify-center bg-gray-700 ">
+      <div class="bg-white rounded-lg w-106.5 min-h-123.5 relative">
+               <div class="flex justify-end items-center mt-6 mr-8">
+          <img :src="closeIcon" @click="close" class="h-6 w-6 cursor-pointer" />
+        </div>
+                <form @submit.prevent="formSubmit" ref="form" class="flex flex-col items-center">
+                 <div class="mt-9">
+            <label class="poppins-400 text-[13px] leading-4.5 text-[#242731] block mb-2 font-normal"
+              >Dátum</label
+            >
+            <div class="relative">
+              <img :src="dateIcon" class="absolute left-3 top-1/2 transform -translate-y-1/2" />
+              <flat-pickr
+                v-model="pickedDate"
+                :config="{
+                  altInput: false,
+                  altFormat: 'Y-m-d',
+                  dateFormat: 'Y-m-d',
+                  enable: [allowedDates],
+                  maxDate: '2025-12-30',
+                }"
+                class="flex items-center justify-center w-74.25 h-11 border rounded-md pl-10 border-[#D4D4D4] roboto-400 placeholder:leading-7 placeholder:text-[#242731] placeholder:text-[18px]"
+                placeholder="Choose date"
+                name="pickedDate"
+                :required="true"
+              />
             </div>
-          </v-form>
-        </v-sheet>
-        
-      </v-card>
-    </v-dialog>
+              <p v-if="pickedDateError" class="poppins-400 leading-4.5 text-[13px] text-[#CE2625] self-start mt-2">{{ pickedDateError }}</p> 
+          </div>
+
+            <div>
+            <label
+              class="poppins-400 text-[13px] leading-4.5 text-[#242731] block mt-3 mb-2 font-normal"
+              >Óra</label
+            >
+            <input
+              type="number"
+              v-model.number="time"
+              min="1"
+              max="24"
+              placeholder="Óra"
+              class="w-74.25 h-11 border rounded-md px-3 border-[#D4D4D4]"
+              required
+            />
+          </div>
+
+          <div>
+            <label
+              class="poppins-400 text-[13px] leading-4.5 text-[#242731] block mt-3 mb-2 font-normal"
+              >Megjegyzés</label
+            >
+            <textarea
+              v-model="comment"
+              rows="10"
+              placeholder="Megjegyzés"
+              class="w-74.25 h-24 border border-[#D4D4D4] rounded-md px-4 py-6 pl-4 pr-2 leading-6"
+              required
+            ></textarea>
+          <p v-if="commentError" class="poppins-400 leading-4.5 text-[13px] text-[#CE2625] self-start mt-2">{{ commentError }}</p> 
+          </div>
+  
+          <div class="flex justify-center gap-6 mt-9 mb-8">
+            <button
+              type="submit"
+              class="text-white px-7.5 py-4.25 rounded-lg bg-[#2B2A2A] w-38.75 inter-500 text-[18px] leading-[100%]"
+            >
+              Mentés
+            </button>
+            <button
+              type="button"
+              @click="close"
+              class="text-white px-7.5 py-4.25 rounded-lg bg-[#CE2625] w-38.75 inter-500 text-[18px] leading-[100%]"
+            >
+              Mégse
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
     <TableItem :items="items"></TableItem>
   </div>
 </template>
 
 <script setup>
+import PlusIcon from '@/assets/+.png'
+import closeIcon from '@/assets/close.png'
+import dateIcon from '@/assets/date.png'
 import TableItem from './TableItem.vue'
 import { ref } from 'vue'
 import { useLoginStore } from '@/stores/login'
+import { onMounted } from 'vue'
 import { useRouter } from 'vuetify/lib/composables/router'
 import { useToast } from 'vue-toastification'
-const form = ref('')
-const isLoggedin = useLoginStore()
+import flatPickr from 'vue-flatpickr-component'
+import 'flatpickr/dist/flatpickr.css'
 const toast = useToast()
-const router = useRouter()
-const dialog = ref(false)
+const modal = ref(false)
 const items = ref([])
 const pickedDate = ref(null)
+const pickedDateError = ref('')
+const formIsValid= ref('')
 const time = ref(null)
 const comment = ref('')
-
-const datePickerRule = [
-  (value) => {
-    if (value) return true
-    return 'Kötelező kitölteni'
-  },
-]
-const commentRules = [
-  (value) => {
-    if (!value || value.length < 10) {
-      return 'A megjegyzésnek legalább 10 karakternek kell lennie'
-    }
-    return true
-  },
-]
+const commentError = ref('')
+const router = useRouter()
+const isLoggedIn = useLoginStore()
+onMounted(() => {
+  if (!isLoggedIn.currentUser) {
+    console.log(isLoggedIn.isLoggedIn)
+    router.push('/login')
+    toast.error('Nincs jogosultságod', { timeout: 3000 })
+  }
+})
 function allowedDates(val) {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -126,10 +134,24 @@ function getWeekOfMonth(dateObj) {
   const weekNumber = Math.ceil((dateObj.getDate() + firstDay.getDay()) / 7)
   return weekNumber
 }
-async function submit() {
-  const { valid } = await form.value.validate()
-  if (!valid) {
-    toast.error('Hibás a form', { timeout: 2400 })
+function formSubmit() {
+  if (pickedDate.value == null) {
+   pickedDateError.value= 'Kötelező választani'
+   formIsValid.value= false
+    }
+    else{
+      formIsValid.value= true
+      pickedDateError.value= ''
+    }
+  if (comment.value.length < 10) {
+   commentError.value= 'Legalább 10 karakternek kell lennie'
+   formIsValid.value= false
+    }
+    else{
+       commentError.value= ''
+    }
+  if (!formIsValid.value) {
+    toast.error('Az adatok mentése sikertelen!', { timeout: 2400 })
   } else {
     const dateObj = new Date(pickedDate.value)
     const dayIndex = dateObj.getDay()
@@ -146,16 +168,16 @@ async function submit() {
       }
       items.value.push(weekRow)
     }
-    weekRow[dayIndex].push(time.value, comment.value)
+    weekRow[dayIndex].push({time:time.value}, {comment:comment.value})
     weekRow.amount += Number(time.value)
-    toast.success('Sikeres Mentés', { timeout: 1200 })
-    form.value.reset()
-    dialog.value = false
+    toast.success('Az adatok mentése sikeres!', { timeout: 1200 })
+  comment.value="",
+  pickedDate.value= null
+  time.value= null
+    modal.value = false
   }
 }
-
-function logOut() {
-  isLoggedin.currentUser = null
-  router.push('/login')
+function close() {
+  modal.value = false
 }
 </script>
