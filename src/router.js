@@ -41,7 +41,8 @@ export const router = createRouter({
       component: Register,
     },
     {
-      path: "/:NotFound(.*)", component: NotFound
-    }
+      path: '/:NotFound(.*)',
+      component: NotFound,
+    },
   ],
 })

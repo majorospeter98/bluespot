@@ -1,23 +1,32 @@
 <template>
   <div class="flex flex-col items-center justify-center">
     <button
-      class="flex items-center justify-center mt-12.25 ml-auto mr-36.75 px-8 py-4 gap-2 bg-[#2B2A2A] text-white rounded-lg leading-[150%] .font-jakarta font-bold"
+      class="flex items-center mr-4 justify-center mt-12.25 ml-auto lg:mr-[16%] h-12.25 px-8 py-4 gap-2 bg-[#2B2A2A] text-white rounded-lg leading-[150%] .font-jakarta font-bold"
       @click="modal = true"
     >
-      <img :src="PlusIcon" class="h-5 w-5"> <span class="font-jakarta leading-[150%]" >Új óra </span>
+      <img :src="PlusIcon" class="h-5 w-5" />
+      <span class="font-jakarta leading-[150%]">Új óra </span>
     </button>
-    <div v-if="modal" class="fixed inset-0 flex items-center justify-center bg-gray-700 ">
+    <div
+      v-if="modal"
+      class="fixed inset-0 bg-black/40 z-40 flex items-center justify-center"
+      @click.self="modal = false"
+    >
       <div class="bg-white rounded-lg w-106.5 min-h-123.5 relative">
-               <div class="flex justify-end items-center mt-6 mr-8">
+        <div class="flex justify-end items-center mt-6 mr-8">
           <img :src="closeIcon" @click="close" class="h-6 w-6 cursor-pointer" />
         </div>
-                <form @submit.prevent="formSubmit" ref="form" class="flex flex-col items-center">
-                 <div class="mt-9">
-            <label class="poppins-400 text-[13px] leading-4.5 text-[#242731] block mb-2 font-normal"
+        <form @submit.prevent="formSubmit" ref="form" class="flex flex-col items-center">
+          <div class="mt-9">
+            <label
+              class="poppins-400 text-[0.813rem] leading-4.5 text-[#242731] block mb-2 font-normal"
               >Dátum</label
             >
             <div class="relative">
-              <img :src="dateIcon" class="absolute left-3 top-1/2 transform -translate-y-1/2" />
+              <img
+                :src="!pickedDateError ? dateIcon : errorDateIcon"
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5.5 w-5"
+              />
               <flat-pickr
                 v-model="pickedDate"
                 :config="{
@@ -33,25 +42,34 @@
                 :required="true"
               />
             </div>
-              <p v-if="pickedDateError" class="poppins-400 leading-4.5 text-[13px] text-[#CE2625] self-start mt-2">{{ pickedDateError }}</p> 
+            <p
+              v-if="pickedDateError"
+              class="poppins-400 leading-4.5 text-[13px] text-[#CE2625] self-start mt-2"
+            >
+              {{ pickedDateError }}
+            </p>
           </div>
-
-            <div>
+          <div>
             <label
               class="poppins-400 text-[13px] leading-4.5 text-[#242731] block mt-3 mb-2 font-normal"
               >Óra</label
             >
-            <input
-              type="number"
-              v-model.number="time"
-              min="1"
-              max="24"
-              placeholder="Óra"
-              class="w-74.25 h-11 border rounded-md px-3 border-[#D4D4D4]"
-              required
-            />
+            <div class="relative">
+              <img
+                :src="grayClock"
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5.5 w-5"
+              />
+              <input
+                type="number"
+                v-model.number="time"
+                min="1"
+                max="24"
+                placeholder="Óra"
+                class="flex items-center justify-center w-74.25 h-11 border rounded-md pl-10 border-[#D4D4D4] roboto-400 placeholder:leading-7 placeholder:text-[#242731] placeholder:text-[18px]"
+                required
+              />
+            </div>
           </div>
-
           <div>
             <label
               class="poppins-400 text-[13px] leading-4.5 text-[#242731] block mt-3 mb-2 font-normal"
@@ -63,10 +81,15 @@
               placeholder="Megjegyzés"
               class="w-74.25 h-24 border border-[#D4D4D4] rounded-md px-4 py-6 pl-4 pr-2 leading-6"
               required
+              maxlength="120"
             ></textarea>
-          <p v-if="commentError" class="poppins-400 leading-4.5 text-[13px] text-[#CE2625] self-start mt-2">{{ commentError }}</p> 
+            <p
+              v-if="commentError"
+              class="poppins-400 leading-4.5 text-[13px] text-[#CE2625] self-start mt-2"
+            >
+              {{ commentError }}
+            </p>
           </div>
-  
           <div class="flex justify-center gap-6 mt-9 mb-8">
             <button
               type="submit"
@@ -88,11 +111,12 @@
     <TableItem :items="items"></TableItem>
   </div>
 </template>
-
 <script setup>
 import PlusIcon from '@/assets/+.png'
 import closeIcon from '@/assets/close.png'
 import dateIcon from '@/assets/date.png'
+import errorDateIcon from '@/assets/errordate.png'
+import grayClock from '@/assets/grayclock.png'
 import TableItem from './TableItem.vue'
 import { ref } from 'vue'
 import { useLoginStore } from '@/stores/login'
@@ -106,7 +130,7 @@ const modal = ref(false)
 const items = ref([])
 const pickedDate = ref(null)
 const pickedDateError = ref('')
-const formIsValid= ref('')
+const formIsValid = ref('')
 const time = ref(null)
 const comment = ref('')
 const commentError = ref('')
@@ -114,8 +138,7 @@ const router = useRouter()
 const isLoggedIn = useLoginStore()
 onMounted(() => {
   if (!isLoggedIn.currentUser) {
-    console.log(isLoggedIn.isLoggedIn)
-    router.push('/login')
+      router.push('/login')
     toast.error('Nincs jogosultságod', { timeout: 3000 })
   }
 })
@@ -136,20 +159,18 @@ function getWeekOfMonth(dateObj) {
 }
 function formSubmit() {
   if (pickedDate.value == null) {
-   pickedDateError.value= 'Kötelező választani'
-   formIsValid.value= false
-    }
-    else{
-      formIsValid.value= true
-      pickedDateError.value= ''
-    }
+    pickedDateError.value = 'Kötelező választani'
+    formIsValid.value = false
+  } else {
+    formIsValid.value = true
+    pickedDateError.value = ''
+  }
   if (comment.value.length < 10) {
-   commentError.value= 'Legalább 10 karakternek kell lennie'
-   formIsValid.value= false
-    }
-    else{
-       commentError.value= ''
-    }
+    commentError.value = 'Legalább 10 karakternek kell lennie'
+    formIsValid.value = false
+  } else {
+    commentError.value = ''
+  }
   if (!formIsValid.value) {
     toast.error('Az adatok mentése sikertelen!', { timeout: 2400 })
   } else {
@@ -167,13 +188,12 @@ function formSubmit() {
         week: getWeekOfMonth(dateObj),
       }
       items.value.push(weekRow)
-    }
-    weekRow[dayIndex].push({time:time.value}, {comment:comment.value})
+     }
+    weekRow[dayIndex].push({ time: time.value }, { comment: comment.value })
     weekRow.amount += Number(time.value)
     toast.success('Az adatok mentése sikeres!', { timeout: 1200 })
-  comment.value="",
-  pickedDate.value= null
-  time.value= null
+    ;((comment.value = ''), (pickedDate.value = null))
+    time.value = null
     modal.value = false
   }
 }
