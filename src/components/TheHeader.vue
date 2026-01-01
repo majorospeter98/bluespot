@@ -3,7 +3,7 @@
     <header
       class="flex h-24 items-center justify-between background: #FFFFFF66 backdrop-blur-[80px]"
     >
-      <img :src="Logo" class="ml-12 h-12 w-37.5" />
+     <router-link :to="'/login'"><img :src="Logo" class="ml-12 h-12 w-37.5" />  </router-link>
       <div class="hidden md:flex gap-4 items-center justify-center">
         <router-link
           v-if="!user"
@@ -44,7 +44,7 @@
         Regisztráció
       </router-link>
       <img :src="Profile" v-if="user" class="w-11 h-11" />
-      <span v-if="user" class="text-black">{{ isLoggedIn.currentUser }}</span>
+      <span v-if="user" class="text-[#404040] text-[0.875rem] nunito">{{ isLoggedIn.currentUser }}</span>
       <img :src="Exit" v-if="user" class="w-6 h-6" @click="logOut" />
     </nav>
   </div>

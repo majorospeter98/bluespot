@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center justify-center h-full">
-    <form @submit.prevent="submitForm" class="w-92.25 h-107.75 mt-26.5">
+    <form @submit.prevent="submitForm" class="w-92.25 h-107.75 mt-26.5 mb-65.5 md:mb-0">
       <div class="relative mt-7 mx-auto w-[90%] lg:w-full">
         <h2 class="poppins-medium text-3xl leading-[100%] h-11.25">Bejelentkezés</h2>
         <div class="relative mt-7">
@@ -31,7 +31,7 @@
         <div class="relative mt-9.5">
           <input
             :type="!visible ? 'password' : 'text'"
-            class="w-full pl-6.5 h-15.5 text-[#2B2A2A] poppins-400 rounded-lg placeholder:text-[#2B2A2A]"
+            class="w-full pl-6.5 h-15.5 text-[#2B2A2A] poppins-400 rounded-lg placeholder:text-[#2B2A2A] bg-[#2B2A2A0D]"
             :class="
               passwordError.length > 1 ? 'border text-[#CE2625] rounded-lg border-[#CE2625]' : ''
             "

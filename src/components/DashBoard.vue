@@ -34,8 +34,7 @@
                   altFormat: 'Y-m-d',
                   dateFormat: 'Y-m-d',
                   enable: [allowedDates],
-                  maxDate: '2025-12-30',
-                }"
+                                 }"
                 class="flex items-center justify-center w-74.25 h-11 border rounded-md pl-10 border-[#D4D4D4] roboto-400 placeholder:leading-7 placeholder:text-[#242731] placeholder:text-[18px]"
                 placeholder="Choose date"
                 name="pickedDate"

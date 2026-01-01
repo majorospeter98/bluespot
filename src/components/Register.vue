@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center justify-center h-full">
-    <form @submit.prevent="submitForm" class="w-92.25 min-h-123.5 mt-26.5">
+    <form @submit.prevent="submitForm" class="w-92.25 min-h-123.5 mt-26.5 mb-65.5 md:mb-0">
       <div class="relative mt-7 mx-auto w-[90%] lg:w-full">
         <h2 class="poppins-medium text-3xl leading-[100%] h-11.25">Regisztráció</h2>
         <div class="relative mt-7">
